@@ -57,12 +57,13 @@ package clover
 
 import (
 	"context"
+	"github.com/goclover/clover/render"
 	"net/http"
 )
 
 // NewRouter returns a new Mux object that implements the Router interface.
-func NewRouter() *Mux {
-	return NewMux()
+func New() *Mux {
+	return newMux()
 }
 
 // Router consisting of the core routing methods used by clover's Mux,
@@ -99,17 +100,6 @@ type Router interface {
 	MethodStd(method, pattern string, h http.Handler)
 	MethodFunc(method, pattern string, h http.HandlerFunc)
 
-	// HTTP-method routing along `pattern`
-	Connect(pattern string, h http.HandlerFunc)
-	Delete(pattern string, h http.HandlerFunc)
-	Get(pattern string, h http.HandlerFunc)
-	Head(pattern string, h http.HandlerFunc)
-	Options(pattern string, h http.HandlerFunc)
-	Patch(pattern string, h http.HandlerFunc)
-	Post(pattern string, h http.HandlerFunc)
-	Put(pattern string, h http.HandlerFunc)
-	Trace(pattern string, h http.HandlerFunc)
-
 	// NotFound defines a handler to respond whenever a route could
 	// not be found.
 	NotFound(h http.HandlerFunc)
@@ -139,12 +129,12 @@ type Routes interface {
 type Middlewares []func(http.Handler) http.Handler
 
 // HandlerFunc type is a func implement of http.Handler
-type HandlerFunc func(c context.Context, r *http.Request) Render
+type HandlerFunc func(c context.Context, r *http.Request) render.Render
 
 // ServeHTTP is the single method of the http.Handler interface that makes it work
-func (h HandlerFunc) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	render := h(r.Context(), r)
-	if err := render.WriteTo(w); err != nil {
+func (h HandlerFunc) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	r := h(req.Context(), req)
+	if err := r.WriteTo(w); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		_, _ = w.Write([]byte(err.Error()))
 	}

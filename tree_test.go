@@ -72,8 +72,8 @@ func TestTree(t *testing.T) {
 
 	tr.InsertRoute(mGET, "/hubs/{hubID}/view", hHubView1)
 	tr.InsertRoute(mGET, "/hubs/{hubID}/view/*", hHubView2)
-	sr := NewRouter()
-	sr.Get("/users", hHubView3)
+	sr := New()
+	sr.MethodFunc("GET", "/users", hHubView3)
 	tr.InsertRoute(mGET, "/hubs/{hubID}/*", sr)
 	tr.InsertRoute(mGET, "/hubs/{hubID}/users", hHubView3)
 

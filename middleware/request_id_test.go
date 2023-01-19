@@ -50,13 +50,13 @@ func TestRequestID(t *testing.T) {
 	for _, test := range tests {
 		w := httptest.NewRecorder()
 
-		r := clover.NewRouter()
+		r := clover.New()
 
 		RequestIDHeader = test.requestIDHeader
 
 		r.Use(RequestID)
 
-		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		r.MethodFunc("GET","/", func(w http.ResponseWriter, r *http.Request) {
 			requestID := GetReqID(r.Context())
 			response := fmt.Sprintf("RequestID: %s", requestID)
 

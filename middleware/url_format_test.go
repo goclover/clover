@@ -9,7 +9,7 @@ import (
 )
 
 func TestURLFormat(t *testing.T) {
-	r := clover.NewRouter()
+	r := clover.New()
 
 	r.Use(URLFormat)
 
@@ -19,14 +19,14 @@ func TestURLFormat(t *testing.T) {
 	})
 
 	r.Route("/samples/articles/samples.{articleID}", func(r clover.Router) {
-		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		r.MethodFunc("GET","/", func(w http.ResponseWriter, r *http.Request) {
 			articleID := clover.URLParam(r, "articleID")
 			w.Write([]byte(articleID))
 		})
 	})
 
 	r.Route("/articles/{articleID}", func(r clover.Router) {
-		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		r.MethodFunc("GET","/", func(w http.ResponseWriter, r *http.Request) {
 			articleID := clover.URLParam(r, "articleID")
 			w.Write([]byte(articleID))
 		})
@@ -50,11 +50,11 @@ func TestURLFormat(t *testing.T) {
 }
 
 func TestURLFormatInSubRouter(t *testing.T) {
-	r := clover.NewRouter()
+	r := clover.New()
 
 	r.Route("/articles/{articleID}", func(r clover.Router) {
 		r.Use(URLFormat)
-		r.Get("/subroute", func(w http.ResponseWriter, r *http.Request) {
+		r.MethodFunc("GET","/subroute", func(w http.ResponseWriter, r *http.Request) {
 			articleID := clover.URLParam(r, "articleID")
 			w.Write([]byte(articleID))
 		})

@@ -31,7 +31,7 @@ var (
 //
 // IMPORTANT NOTE: Logger should go before any other middleware that may change
 // the response, such as middleware.Recoverer. Example:
-//     r := clover.NewRouter()
+//     r := clover.New()
 //     r.Use(middleware.Logger)        // <--<< Logger should come before Recoverer
 //     r.Use(middleware.Recoverer)
 //     r.Get("/", handler)

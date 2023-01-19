@@ -12,17 +12,17 @@ import (
 // Profiler is a convenient subrouter used for mounting net/http/pprof. ie.
 //
 //	func MyService() http.Handler {
-//	  r := clover.NewRouter()
+//	  r := clover.New()
 //	  // ..middlewares
 //	  r.Mount("/debug", middleware.Profiler())
 //	  // ..routes
 //	  return r
 //	}
 func Profiler() http.Handler {
-	r := clover.NewRouter()
+	r := clover.New()
 	r.Use(NoCache)
 
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+	r.MethodFunc("GET", "/", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, r.RequestURI+"/pprof/", http.StatusMovedPermanently)
 	})
 	r.HandleFunc("/pprof", func(w http.ResponseWriter, r *http.Request) {

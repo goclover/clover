@@ -68,9 +68,9 @@ func TestContentEncodingMiddleware(t *testing.T) {
 			}
 
 			w := httptest.NewRecorder()
-			router := clover.NewRouter()
+			router := clover.New()
 			router.Use(middleware)
-			router.Post("/", func(w http.ResponseWriter, r *http.Request) {})
+			router.MethodFunc("POST", "/", func(w http.ResponseWriter, r *http.Request) {})
 
 			router.ServeHTTP(w, r)
 			res := w.Result()

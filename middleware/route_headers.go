@@ -11,8 +11,8 @@ import (
 // For example, lets say you'd like to setup multiple routers depending on the
 // request Host header, you could then do something as so:
 //
-// r := clover.NewRouter()
-// rSubdomain := clover.NewRouter()
+// r := clover.New()
+// rSubdomain := clover.New()
 //
 // r.Use(middleware.RouteHeaders().
 //   Route("Host", "example.com", middleware.New(r)).
@@ -27,7 +27,7 @@ import (
 // your origin servers you allow authorized requests, but for third-party public
 // requests, authorization is disabled.
 //
-// r := clover.NewRouter()
+// r := clover.New()
 //
 // r.Use(middleware.RouteHeaders().
 //   Route("Origin", "https://app.skyweaver.net", cors.Handler(cors.Options{

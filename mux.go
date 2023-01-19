@@ -47,9 +47,9 @@ type Mux struct {
 	inline bool
 }
 
-// NewMux returns a newly initialized Mux object that implements the Router
+// newMux returns a newly initialized Mux object that implements the Router
 // interface.
-func NewMux() *Mux {
+func newMux() *Mux {
 	mux := &Mux{tree: &node{}, pool: &sync.Pool{}}
 	mux.pool.New = func() interface{} {
 		return NewRouteContext()
@@ -148,60 +148,6 @@ func (mx *Mux) MethodFunc(method, pattern string, handlerFn http.HandlerFunc) {
 	mx.MethodStd(method, pattern, handlerFn)
 }
 
-// Connect adds the route `pattern` that matches a CONNECT http method to
-// execute the `handlerFn` http.HandlerFunc.
-func (mx *Mux) Connect(pattern string, handlerFn http.HandlerFunc) {
-	mx.handle(mCONNECT, pattern, handlerFn)
-}
-
-// Delete adds the route `pattern` that matches a DELETE http method to
-// execute the `handlerFn` http.HandlerFunc.
-func (mx *Mux) Delete(pattern string, handlerFn http.HandlerFunc) {
-	mx.handle(mDELETE, pattern, handlerFn)
-}
-
-// Get adds the route `pattern` that matches a GET http method to
-// execute the `handlerFn` http.HandlerFunc.
-func (mx *Mux) Get(pattern string, handlerFn http.HandlerFunc) {
-	mx.handle(mGET, pattern, handlerFn)
-}
-
-// Head adds the route `pattern` that matches a HEAD http method to
-// execute the `handlerFn` http.HandlerFunc.
-func (mx *Mux) Head(pattern string, handlerFn http.HandlerFunc) {
-	mx.handle(mHEAD, pattern, handlerFn)
-}
-
-// Options adds the route `pattern` that matches a OPTIONS http method to
-// execute the `handlerFn` http.HandlerFunc.
-func (mx *Mux) Options(pattern string, handlerFn http.HandlerFunc) {
-	mx.handle(mOPTIONS, pattern, handlerFn)
-}
-
-// Patch adds the route `pattern` that matches a PATCH http method to
-// execute the `handlerFn` http.HandlerFunc.
-func (mx *Mux) Patch(pattern string, handlerFn http.HandlerFunc) {
-	mx.handle(mPATCH, pattern, handlerFn)
-}
-
-// Post adds the route `pattern` that matches a POST http method to
-// execute the `handlerFn` http.HandlerFunc.
-func (mx *Mux) Post(pattern string, handlerFn http.HandlerFunc) {
-	mx.handle(mPOST, pattern, handlerFn)
-}
-
-// Put adds the route `pattern` that matches a PUT http method to
-// execute the `handlerFn` http.HandlerFunc.
-func (mx *Mux) Put(pattern string, handlerFn http.HandlerFunc) {
-	mx.handle(mPUT, pattern, handlerFn)
-}
-
-// Trace adds the route `pattern` that matches a TRACE http method to
-// execute the `handlerFn` http.HandlerFunc.
-func (mx *Mux) Trace(pattern string, handlerFn http.HandlerFunc) {
-	mx.handle(mTRACE, pattern, handlerFn)
-}
-
 // NotFound sets a custom http.HandlerFunc for routing paths that could
 // not be found. The default 404 handler is `http.NotFound`.
 func (mx *Mux) NotFound(handlerFn http.HandlerFunc) {
@@ -284,7 +230,7 @@ func (mx *Mux) Route(pattern string, fn func(r Router)) Router {
 	if fn == nil {
 		panic(fmt.Sprintf("clover: attempting to Route() a nil subrouter on '%s'", pattern))
 	}
-	subRouter := NewRouter()
+	subRouter := newMux()
 	fn(subRouter)
 	mx.Mount(pattern, subRouter)
 	return subRouter

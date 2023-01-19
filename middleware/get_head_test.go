@@ -9,25 +9,25 @@ import (
 )
 
 func TestGetHead(t *testing.T) {
-	r := clover.NewRouter()
+	r := clover.New()
 	r.Use(GetHead)
-	r.Get("/hi", func(w http.ResponseWriter, r *http.Request) {
+	r.MethodFunc("GET", "/hi", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("X-Test", "yes")
 		w.Write([]byte("bye"))
 	})
 	r.Route("/articles", func(r clover.Router) {
-		r.Get("/{id}", func(w http.ResponseWriter, r *http.Request) {
+		r.MethodFunc("GET", "/{id}", func(w http.ResponseWriter, r *http.Request) {
 			id := clover.URLParam(r, "id")
 			w.Header().Set("X-Article", id)
 			w.Write([]byte("article:" + id))
 		})
 	})
 	r.Route("/users", func(r clover.Router) {
-		r.Head("/{id}", func(w http.ResponseWriter, r *http.Request) {
+		r.MethodFunc("HEAD", "/{id}", func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("X-User", "-")
 			w.Write([]byte("user"))
 		})
-		r.Get("/{id}", func(w http.ResponseWriter, r *http.Request) {
+		r.MethodFunc("GET", "/{id}", func(w http.ResponseWriter, r *http.Request) {
 			id := clover.URLParam(r, "id")
 			w.Header().Set("X-User", id)
 			w.Write([]byte("user:" + id))

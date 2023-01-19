@@ -15,7 +15,7 @@ import (
 )
 
 func TestCompressor(t *testing.T) {
-	r := clover.NewRouter()
+	r := clover.New()
 
 	compressor := NewCompressor(5, "text/html", "text/css")
 	if len(compressor.encoders) != 0 || len(compressor.pooledEncoders) != 2 {
@@ -32,17 +32,17 @@ func TestCompressor(t *testing.T) {
 
 	r.Use(compressor.Handler)
 
-	r.Get("/gethtml", func(w http.ResponseWriter, r *http.Request) {
+	r.MethodFunc("GET", "/gethtml", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
 		w.Write([]byte("textstring"))
 	})
 
-	r.Get("/getcss", func(w http.ResponseWriter, r *http.Request) {
+	r.MethodFunc("GET", "/getcss", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
 		w.Write([]byte("textstring"))
 	})
 
-	r.Get("/getplain", func(w http.ResponseWriter, r *http.Request) {
+	r.MethodFunc("GET", "/getplain", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
 		w.Write([]byte("textstring"))
 	})

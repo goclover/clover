@@ -13,11 +13,11 @@ func TestXRealIP(t *testing.T) {
 	req.Header.Add("X-Real-IP", "100.100.100.100")
 	w := httptest.NewRecorder()
 
-	r := clover.NewRouter()
+	r := clover.New()
 	r.Use(RealIP)
 
 	realIP := ""
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+	r.MethodFunc("GET","/", func(w http.ResponseWriter, r *http.Request) {
 		realIP = r.RemoteAddr
 		w.Write([]byte("Hello World"))
 	})
@@ -39,7 +39,7 @@ func TestXForwardForIP(t *testing.T) {
 		"100.100.100.100,200.200.200.200",
 	}
 
-	r := clover.NewRouter()
+	r := clover.New()
 	r.Use(RealIP)
 
 	for _, v := range xForwardedForIPs {
@@ -49,7 +49,7 @@ func TestXForwardForIP(t *testing.T) {
 		w := httptest.NewRecorder()
 
 		realIP := ""
-		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		r.MethodFunc("GET","/", func(w http.ResponseWriter, r *http.Request) {
 			realIP = r.RemoteAddr
 			w.Write([]byte("Hello World"))
 		})
@@ -71,11 +71,11 @@ func TestXForwardForXRealIPPrecedence(t *testing.T) {
 	req.Header.Add("X-Real-IP", "100.100.100.100")
 	w := httptest.NewRecorder()
 
-	r := clover.NewRouter()
+	r := clover.New()
 	r.Use(RealIP)
 
 	realIP := ""
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+	r.MethodFunc("GET","/", func(w http.ResponseWriter, r *http.Request) {
 		realIP = r.RemoteAddr
 		w.Write([]byte("Hello World"))
 	})
@@ -95,11 +95,11 @@ func TestIvalidIP(t *testing.T) {
 	req.Header.Add("X-Real-IP", "100.100.100.1000")
 	w := httptest.NewRecorder()
 
-	r := clover.NewRouter()
+	r := clover.New()
 	r.Use(RealIP)
 
 	realIP := ""
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+	r.MethodFunc("GET","/", func(w http.ResponseWriter, r *http.Request) {
 		realIP = r.RemoteAddr
 		w.Write([]byte("Hello World"))
 	})

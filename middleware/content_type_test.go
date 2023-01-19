@@ -63,9 +63,9 @@ func TestContentType(t *testing.T) {
 
 			recorder := httptest.NewRecorder()
 
-			r := clover.NewRouter()
+			r := clover.New()
 			r.Use(AllowContentType(tt.allowedContentTypes...))
-			r.Post("/", func(w http.ResponseWriter, r *http.Request) {})
+			r.MethodFunc("POST", "/", func(w http.ResponseWriter, r *http.Request) {})
 
 			body := []byte("This is my content. There are many like this but this one is mine")
 			req := httptest.NewRequest("POST", "/", bytes.NewReader(body))

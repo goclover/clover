@@ -15,11 +15,11 @@ import (
 var testContent = []byte("Hello world!")
 
 func TestThrottleBacklog(t *testing.T) {
-	r := clover.NewRouter()
+	r := clover.New()
 
 	r.Use(ThrottleBacklog(10, 50, time.Second*10))
 
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+	r.MethodFunc("GET", "/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		time.Sleep(time.Second * 1) // Expensive operation.
 		w.Write(testContent)
@@ -56,11 +56,11 @@ func TestThrottleBacklog(t *testing.T) {
 }
 
 func TestThrottleClientTimeout(t *testing.T) {
-	r := clover.NewRouter()
+	r := clover.New()
 
 	r.Use(ThrottleBacklog(10, 50, time.Second*10))
 
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+	r.MethodFunc("GET", "/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		time.Sleep(time.Second * 5) // Expensive operation.
 		w.Write(testContent)
@@ -88,11 +88,11 @@ func TestThrottleClientTimeout(t *testing.T) {
 }
 
 func TestThrottleTriggerGatewayTimeout(t *testing.T) {
-	r := clover.NewRouter()
+	r := clover.New()
 
 	r.Use(ThrottleBacklog(50, 100, time.Second*5))
 
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+	r.MethodFunc("GET", "/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		time.Sleep(time.Second * 10) // Expensive operation.
 		w.Write(testContent)
@@ -144,11 +144,11 @@ func TestThrottleTriggerGatewayTimeout(t *testing.T) {
 }
 
 func TestThrottleMaximum(t *testing.T) {
-	r := clover.NewRouter()
+	r := clover.New()
 
 	r.Use(ThrottleBacklog(10, 10, time.Second*5))
 
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+	r.MethodFunc("GET", "/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		time.Sleep(time.Second * 3) // Expensive operation.
 		w.Write(testContent)
@@ -205,12 +205,12 @@ func TestThrottleMaximum(t *testing.T) {
 
 // NOTE: test is disabled as it requires some refactoring. It is prone to intermittent failure.
 /*func TestThrottleRetryAfter(t *testing.T) {
-	r := clover.NewRouter()
+	r := clover.New()
 
 	retryAfterFn := func(ctxDone bool) time.Duration { return time.Hour * 1 }
 	r.Use(ThrottleWithOpts(ThrottleOpts{Limit: 10, RetryAfterFn: retryAfterFn}))
 
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+	r.MethodFunc("GET","/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		time.Sleep(time.Second * 4) // Expensive operation.
 		w.Write(testContent)
@@ -230,7 +230,7 @@ func TestThrottleMaximum(t *testing.T) {
 		go func(i int) {
 			defer wg.Done()
 
-			res, err := client.Get(server.URL)
+			res, err := client.MethodFunc("GET",server.URL)
 			assertNoError(t, err)
 			assertEqual(t, http.StatusOK, res.StatusCode)
 		}(i)
@@ -243,10 +243,10 @@ func TestThrottleMaximum(t *testing.T) {
 		go func(i int) {
 			defer wg.Done()
 
-			res, err := client.Get(server.URL)
+			res, err := client.MethodFunc("GET",server.URL)
 			assertNoError(t, err)
 			assertEqual(t, http.StatusTooManyRequests, res.StatusCode)
-			assertEqual(t, res.Header.Get("Retry-After"), "3600")
+			assertEqual(t, res.Header.MethodFunc("GET","Retry-After"), "3600")
 		}(i)
 	}
 

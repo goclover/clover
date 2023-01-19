@@ -74,9 +74,9 @@ func TestContentCharset(t *testing.T) {
 
 			var recorder = httptest.NewRecorder()
 
-			var r = clover.NewRouter()
+			var r = clover.New()
 			r.Use(ContentCharset(tt.inputContentCharset...))
-			r.Get("/", func(w http.ResponseWriter, r *http.Request) {})
+			r.MethodFunc("GET","/", func(w http.ResponseWriter, r *http.Request) {})
 
 			var req, _ = http.NewRequest("GET", "/", nil)
 			req.Header.Set("Content-Type", tt.inputValue)

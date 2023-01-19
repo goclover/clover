@@ -23,7 +23,7 @@ var (
 // Sample usage.. for url paths: `/articles/1`, `/articles/1.json` and `/articles/1.xml`
 //
 //  func routes() http.Handler {
-//    r := clover.NewRouter()
+//    r := clover.New()
 //    r.Use(middleware.URLFormat)
 //
 //    r.Get("/articles/{id}", ListArticles)
