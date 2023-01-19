@@ -62,8 +62,11 @@ import (
 )
 
 // NewRouter returns a new Mux object that implements the Router interface.
-func New() *Mux {
-	return newMux()
+func New() *Clover {
+	c := &Clover{
+		Mux: newMux(),
+	}
+	return c
 }
 
 // Router consisting of the core routing methods used by clover's Mux,
@@ -138,4 +141,12 @@ func (h HandlerFunc) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		_, _ = w.Write([]byte(err.Error()))
 	}
+}
+
+type Clover struct {
+	*Mux
+}
+
+func (c *Clover) Run(addr string) error {
+	return http.ListenAndServe(addr, c)
 }

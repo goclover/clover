@@ -125,21 +125,27 @@ func (mx *Mux) HandleFunc(pattern string, handlerFn http.HandlerFunc) {
 // Method adds the route `pattern` that matches `method` http method to
 // execute the `handler` http.Handler.
 func (mx *Mux) Method(method, pattern string, handler HandlerFunc) {
-	m, ok := methodMap[strings.ToUpper(method)]
-	if !ok {
-		panic(fmt.Sprintf("clover: '%s' http method is not supported.", method))
+	var ms = strings.Split(method, ",")
+	for _, v := range ms {
+		m, ok := methodMap[strings.ToUpper(v)]
+		if !ok {
+			panic(fmt.Sprintf("clover: '%s' http method is not supported.", method))
+		}
+		mx.handle(m, pattern, handler)
 	}
-	mx.handle(m, pattern, handler)
 }
 
 // MethodStd adds the route `pattern` that matches `method` http method to
 // execute the `handler` http.Handler.
 func (mx *Mux) MethodStd(method, pattern string, handler http.Handler) {
-	m, ok := methodMap[strings.ToUpper(method)]
-	if !ok {
-		panic(fmt.Sprintf("clover: '%s' http method is not supported.", method))
+	var ms = strings.Split(method, ",")
+	for _, v := range ms {
+		m, ok := methodMap[strings.ToUpper(v)]
+		if !ok {
+			panic(fmt.Sprintf("clover: '%s' http method is not supported.", method))
+		}
+		mx.handle(m, pattern, handler)
 	}
-	mx.handle(m, pattern, handler)
 }
 
 // MethodFunc adds the route `pattern` that matches `method` http method to
