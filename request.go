@@ -1,11 +1,10 @@
-package plugin
+package clover
 
 import (
 	"context"
 	"io"
 	"net/http"
 	"net/url"
-	"time"
 )
 
 // Request http server 请求信息
@@ -17,9 +16,7 @@ type Request interface {
 	// ？前面的那部分
 	Path() string
 
-	// 接收请求的时间
-	OpTime() time.Time
-
+	//Request URI
 	RequestURI() string
 
 	// 客户端的地址，如 127.0.0.1:12345
@@ -49,22 +46,13 @@ type Request interface {
 }
 
 // NewRequest 基于原生的request创建一个封装更多功能的request
-func NewRequest(opTime time.Time, req *http.Request) Request {
-	return &request{
-		raw:    req,
-		opTime: opTime,
-	}
+func NewRequest(req *http.Request) Request {
+	return &request{raw: req}
 }
 
 type request struct {
-	raw    *http.Request
-	opTime time.Time
-
+	raw      *http.Request
 	urlQuery url.Values
-}
-
-func (req *request) OpTime() time.Time {
-	return req.opTime
 }
 
 func (req *request) HTTPRequest() *http.Request {
