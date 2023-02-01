@@ -532,7 +532,7 @@ func TestMuxComplicatedNotFound(t *testing.T) {
 	}
 
 	t.Run("pre", func(t *testing.T) {
-		r := New()
+		r := newMux()
 		r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("custom not-found"))
 		})
@@ -541,7 +541,7 @@ func TestMuxComplicatedNotFound(t *testing.T) {
 	})
 
 	t.Run("post", func(t *testing.T) {
-		r := New()
+		r := newMux()
 		decorateRouter(r)
 		r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("custom not-found"))
@@ -829,7 +829,7 @@ func bigMux() Router {
 	var r *Mux
 	var sr3 *Mux
 	// var sr1, sr2, sr3, sr4, sr5, sr6 *Mux
-	r = New()
+	r = newMux()
 	r.Use(func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			ctx := context.WithValue(r.Context(), ctxKey{"requestID"}, "1")
@@ -910,7 +910,7 @@ func bigMux() Router {
 					w.Write([]byte(s))
 				})
 
-				sr3 = New()
+				sr3 = newMux()
 				sr3.MethodFunc("GET", "/", func(w http.ResponseWriter, r *http.Request) {
 					ctx := r.Context()
 					s := fmt.Sprintf("/hubs/%s/webhooks reqid:%s session:%s", URLParam(r, "hubID"),
