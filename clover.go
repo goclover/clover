@@ -69,6 +69,10 @@ func New() *Clover {
 	return c
 }
 
+func NewRouter() *Mux {
+	return newMux()
+}
+
 // Router consisting of the core routing methods used by clover's Mux,
 // using only the standard net/http.
 type Router interface {
