@@ -2,6 +2,7 @@ package clover
 
 import (
 	"context"
+	"encoding/json"
 	"io"
 	"net/http"
 	"net/url"
@@ -41,6 +42,8 @@ type Request interface {
 	PostForm(name string) (value string, has bool)
 
 	PostFormDefault(name string, defaultValue string) string
+
+	JsonUnmarshal(dst interface{}) error
 
 	Body() io.ReadCloser
 }
@@ -125,6 +128,15 @@ func (req *request) PostFormDefault(name string, defaultValue string) string {
 		return v
 	}
 	return defaultValue
+}
+
+func (req *request) JsonUnmarshal(dst interface{}) (err error) {
+	var bs []byte
+	if bs, err = io.ReadAll(req.Body()); err != nil {
+		return
+	}
+	err = json.Unmarshal(bs, dst)
+	return
 }
 
 func (req *request) Body() io.ReadCloser {
