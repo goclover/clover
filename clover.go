@@ -158,7 +158,7 @@ func (c *Clover) Run(addr string) error {
 		c.Ser = &http.Server{}
 	}
 	c.Ser.Addr = addr
-	c.handler = c
+	c.Ser.Handler = c
 	return c.Ser.ListenAndServe()
 }
 
