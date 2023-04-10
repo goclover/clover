@@ -57,8 +57,9 @@ package clover
 
 import (
 	"context"
-	"github.com/goclover/clover/render"
 	"net/http"
+
+	"github.com/goclover/clover/render"
 )
 
 // NewRouter returns a new Mux object that implements the Router interface.
@@ -149,8 +150,19 @@ func (h HandlerFunc) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 type Clover struct {
 	*Mux
+	Ser *http.Server
 }
 
 func (c *Clover) Run(addr string) error {
-	return http.ListenAndServe(addr, c)
+	if c.Ser == nil {
+		c.Ser = &http.Server{Addr: addr, Handler: c}
+	}
+	return c.Ser.ListenAndServe()
+}
+
+func (c *Clover) RunTLS(addr string, certFile, keyFile string) error {
+	if c.Ser == nil {
+		c.Ser = &http.Server{Addr: addr, Handler: c}
+	}
+	return c.Ser.ListenAndServeTLS(certFile, keyFile)
 }
