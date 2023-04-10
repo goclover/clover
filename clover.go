@@ -155,14 +155,18 @@ type Clover struct {
 
 func (c *Clover) Run(addr string) error {
 	if c.Ser == nil {
-		c.Ser = &http.Server{Addr: addr, Handler: c}
+		c.Ser = &http.Server{}
 	}
+	c.Ser.Addr = addr
+	c.handler = c
 	return c.Ser.ListenAndServe()
 }
 
 func (c *Clover) RunTLS(addr string, certFile, keyFile string) error {
 	if c.Ser == nil {
-		c.Ser = &http.Server{Addr: addr, Handler: c}
+		c.Ser = &http.Server{}
 	}
+	c.Ser.Addr = addr
+	c.Ser.Handler = c
 	return c.Ser.ListenAndServeTLS(certFile, keyFile)
 }
