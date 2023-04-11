@@ -15,13 +15,13 @@ func panicingHandler(http.ResponseWriter, *http.Request) { panic("foo") }
 func TestRecoverer(t *testing.T) {
 	r := clover.New()
 
-	oldRecovererErrorWriter := recovererErrorWriter
-	defer func() { recovererErrorWriter = oldRecovererErrorWriter }()
+	oldRecovererErrorWriter := RecovererErrorWriter
+	defer func() { RecovererErrorWriter = oldRecovererErrorWriter }()
 	buf := &bytes.Buffer{}
-	recovererErrorWriter = buf
+	RecovererErrorWriter = buf
 
 	r.Use(Recoverer)
-	r.MethodFunc("GET","/", panicingHandler)
+	r.MethodFunc("GET", "/", panicingHandler)
 
 	ts := httptest.NewServer(r)
 	defer ts.Close()
@@ -54,7 +54,7 @@ func TestRecovererAbortHandler(t *testing.T) {
 	r := clover.New()
 	r.Use(Recoverer)
 
-	r.MethodFunc("GET","/", func(w http.ResponseWriter, r *http.Request) {
+	r.MethodFunc("GET", "/", func(w http.ResponseWriter, r *http.Request) {
 		panic(http.ErrAbortHandler)
 	})
 

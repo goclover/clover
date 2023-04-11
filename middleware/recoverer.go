@@ -47,14 +47,14 @@ func Recoverer(next http.Handler) http.Handler {
 }
 
 // for ability to test the PrintPrettyStack function
-var recovererErrorWriter io.Writer = os.Stderr
+var RecovererErrorWriter io.Writer = os.Stderr
 
 func PrintPrettyStack(rvr interface{}) {
 	debugStack := debug.Stack()
 	s := prettyStack{}
 	out, err := s.parse(debugStack, rvr)
 	if err == nil {
-		recovererErrorWriter.Write(out)
+		RecovererErrorWriter.Write(out)
 	} else {
 		// print stdlib output as a fallback
 		os.Stderr.Write(debugStack)
