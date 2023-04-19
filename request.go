@@ -43,6 +43,10 @@ type Request interface {
 
 	PostFormDefault(name string, defaultValue string) string
 
+	Param(name string) (value string, has bool)
+
+	ParamDefault(name string, defaultValue string) string
+
 	JsonUnmarshal(dst interface{}) error
 
 	Body() io.ReadCloser
@@ -109,6 +113,20 @@ func (req *request) Query(name string) (value string, has bool) {
 
 func (req *request) QueryDefault(name string, defaultValue string) string {
 	if v, _ := req.Query(name); v != "" {
+		return v
+	}
+	return defaultValue
+}
+
+func (req *request) Param(name string) (string, bool) {
+	if value, has := req.Query(name); has {
+		return value, has
+	}
+	return req.PostForm(name)
+}
+
+func (req *request) ParamDefault(name string, defaultValue string) string {
+	if v, has := req.Param(name); has {
 		return v
 	}
 	return defaultValue
