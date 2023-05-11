@@ -60,6 +60,7 @@ func NewRequest(req *http.Request) Request {
 type request struct {
 	raw      *http.Request
 	urlQuery url.Values
+	body     []byte
 }
 
 func (req *request) HTTPRequest() *http.Request {
@@ -149,12 +150,12 @@ func (req *request) PostFormDefault(name string, defaultValue string) string {
 }
 
 func (req *request) JsonUnmarshal(dst interface{}) (err error) {
-	var bs []byte
-	if bs, err = io.ReadAll(req.Body()); err != nil {
-		return
+	if len(req.body) <= 0 {
+		if req.body, err = io.ReadAll(req.Body()); err != nil {
+			return
+		}
 	}
-	err = json.Unmarshal(bs, dst)
-	return
+	return json.Unmarshal(req.body, dst)
 }
 
 func (req *request) Body() io.ReadCloser {
